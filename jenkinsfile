@@ -47,7 +47,9 @@ pipeline
        {
           try
 	  {
-	    sh 'scp /var/lib/jenkins/workspace/declarative2/webapp/target/webapp.war ubuntu@172.31.20.225:/var/lib/tomcat9/test456.war'
+	  mail bcc: '', body: 'build tool not working', cc: '', from: '', replyTo: '', subject: 'deployment failed', to: 'dep.admin@gmail.com'
+          exit(1)
+   sh 'scp /var/lib/jenkins/workspace/declarative2/webapp/target/webapp.war ubuntu@172.31.20.225:/var/lib/tomcat9/test456.war'
           }
 	  catch(Exception e2)
 	  {
@@ -56,6 +58,31 @@ pipeline
            }
 	 }
 	}
-      }	
+      }
+     stage('ContTesting') 
+     {
+     steps
+     {
+      script
+      {
+        try
+	{
+        git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+	sh 'java -jar /var/lib/jenkins/workspace/declarative2/testing.jar'
+	}
+	catch(Exception e3)
+	{
+	   mail bcc: '', body: 'build tool not working', cc: '', from: '', replyTo: '', subject: 'deployment failed', to: 'dep.admin@gmail.com'
+          exit(1)
+         }
+	} 
+       }
+      }
+      stage('ContDelivery')
+      {
+        steps
+	{
+	  sh 'scp /var/lib/jenkins/workspace/declarative2/webapp/target/webapp.war ubuntu@172.31.17.50:/var/lib/tomcat9/webapps/prod456.war
+  }
   }
 }
