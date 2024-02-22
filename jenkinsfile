@@ -39,5 +39,23 @@ pipeline
       }
      }
    }
+   stage('ContDeployment')
+   {
+     steps
+     {
+       script
+       {
+          try
+	  {
+	    sh 'scp /var/lib/jenkins/workspace/declarative2/webapp/target/webapp.war ubuntu@172.31.20.225:/var/lib/tomcat9/test456.war'
+          }
+	  catch(Exception e2)
+	  {
+	  mail bcc: '', body: 'build tool not working', cc: '', from: '', replyTo: '', subject: 'deployment failed', to: 'dep.admin@gmail.com'
+          exit(1)
+           }
+	 }
+	}
+      }	
   }
 }
