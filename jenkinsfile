@@ -1,0 +1,45 @@
+pipeline
+{
+agent any
+stages
+{
+stage('ContDownload')
+{
+steps
+{
+script
+{
+try
+{
+git 'https://github.com/intelliqittrainings/maven.git'
+}
+catch(Exception e)
+{
+mail bcc: '', body: 'git not working', cc: '', from: '', replyTo: '', subject: 'download failed', to: 'git.admin@gmail.com'
+exit(1)
+}
+}
+}
+
+}
+stage('ContBuild')
+{
+steps
+{
+script
+{
+try
+{
+sh 'mvn package'
+}
+catch(Exception e2)
+{
+mail bcc: '', body: 'build tool not working', cc: '', from: '', replyTo: '', subject: 'build failed', to: 'dev.admin@gmail.com'
+exit(1)
+}
+}
+}
+}
+
+}
+}
